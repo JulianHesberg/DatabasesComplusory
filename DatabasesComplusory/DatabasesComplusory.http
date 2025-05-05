@@ -1,0 +1,6 @@
+@DatabasesComplusory_HostAddress = http://localhost:5180
+
+GET {{DatabasesComplusory_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
