@@ -3,3 +3,61 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+
+# Rider specific
+.idea/
+*.iml
+*.iws
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/dictionaries
+.idea/**/shelf/
+.idea/**/vcs.xml
+.idea/**/modules.xml
+
+# Rider logs
+.idea/logs/
+.idea/**/log/
+
+# Visual Studio specific
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Build results
+bin/
+obj/
+out/
+
+# NuGet packages
+*.nupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Debug and Release folders
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]pp[Dd]ata/
+
+# Rider and Visual Studio caches
+_ReSharper.*
+*.DotSettings.user
+*.DotSettings
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.pid
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+Thumbs.db
