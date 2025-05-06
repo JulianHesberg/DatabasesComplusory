@@ -1,17 +1,17 @@
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using DatabasesComplusory.Data.Context;
 using DatabasesComplusory.Domain.Interfaces;
+using DatabasesComplusory.Infrastructure.Context;
 
 namespace DatabasesComplusory.Infrastructure.UnitOfWork;
 
 public class UnitOfWork : IUnitOfWork
 {
-    private readonly EFCoreContext _context;
+    private readonly EfCoreContext _context;
     private IDbContextTransaction? _transaction;
     
-    public UnitOfWork(EFCoreContext context)
+    public UnitOfWork(EfCoreContext context)
     {
         _context = context;
     }

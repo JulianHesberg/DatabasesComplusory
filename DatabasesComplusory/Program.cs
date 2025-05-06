@@ -1,9 +1,9 @@
-using DatabasesComplusory.Data.Context;
+using DatabasesComplusory.Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<EFCoreContext>(options =>
+builder.Services.AddDbContext<EfCoreContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
 
 
