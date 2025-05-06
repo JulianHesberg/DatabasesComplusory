@@ -41,4 +41,13 @@ public class UnitOfWork : IUnitOfWork
         await _transaction.RollbackAsync();
         await _transaction.DisposeAsync();
     }
+    
+    public async Task SaveChangesAsync()
+    {
+        if (_transaction == null)
+        {
+            throw new InvalidOperationException("Transaction has not been started.");
+        }
+        await _context.SaveChangesAsync();
+    }
 }

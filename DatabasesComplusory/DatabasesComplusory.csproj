@@ -35,6 +35,7 @@
 
     <ItemGroup>
       <Folder Include="Application\DTO\" />
+      <Folder Include="Application\Queries\" />
       <Folder Include="Presentation\" />
     </ItemGroup>
 

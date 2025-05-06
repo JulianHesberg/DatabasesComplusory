@@ -1,13 +1,20 @@
 using DatabasesComplusory.Domain.Entities.Write;
 using DatabasesComplusory.Domain.Interfaces;
+using DatabasesComplusory.Infrastructure.Context;
 
 namespace DatabasesComplusory.Infrastructure.Repository;
 
 public class UserRepository : IUserRepository
 {
-    public Task AddAsync(User user)
+    private readonly EfCoreContext _context;
+    public UserRepository(EfCoreContext context)
     {
-        throw new NotImplementedException();
+        _context = context;
+    }
+    public async Task<User> AddAsync(User user)
+    {
+        var entity = await _context.Users.AddAsync(user);
+        return entity.Entity;
     }
 
     public Task DeleteAsync(int id)
