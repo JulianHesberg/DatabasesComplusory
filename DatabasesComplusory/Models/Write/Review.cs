@@ -1,4 +1,4 @@
-namespace DatabasesComplusory.Models;
+namespace DatabasesComplusory.Models.Write;
 
 public class Review
 {
