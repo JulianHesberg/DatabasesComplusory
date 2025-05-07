@@ -20,7 +20,7 @@ public class CreateUserCommandHandler
         _unitOfWork = unitOfWork;
     }
 
-    public async Task HandleAsync(CreateUserCommand command)
+    public async Task<User> HandleAsync(CreateUserCommand command)
     {
         using var transaction = await _unitOfWork.BeginTransactionAsync(IsolationLevel.Serializable);
         try
@@ -40,6 +40,7 @@ public class CreateUserCommandHandler
             };
             await _eventBus.Publish(userCreatedEvent);
             await transaction.CommitAsync();
+            return created;
         }
         catch
         {
