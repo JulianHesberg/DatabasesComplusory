@@ -43,7 +43,8 @@ public class EfCoreContext :DbContext
         modelBuilder.Entity<Review>()
             .HasOne<User>()
             .WithMany()
-            .HasForeignKey(r => r.UserId);
+            .HasForeignKey(r => r.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
         
         // Links Order to Listing
         modelBuilder.Entity<Order>()
@@ -55,7 +56,8 @@ public class EfCoreContext :DbContext
         modelBuilder.Entity<Order>()
             .HasOne<User>()
             .WithMany()
-            .HasForeignKey(s => s.UserId);
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
         
         // Links Listing to Seller
         modelBuilder.Entity<Listing>()

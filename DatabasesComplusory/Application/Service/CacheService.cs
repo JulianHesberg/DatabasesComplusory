@@ -1,36 +1,45 @@
 using DatabasesComplusory.Domain.Entities.Read;
-using Newtonsoft.Json;
-using StackExchange.Redis;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace DatabasesComplusory.Application.Service;
 
 public class CacheService
 {
-    private readonly IDatabase _cache;
-    
-    public CacheService(IConnectionMultiplexer redisConnection)  
-    {  
-        _cache = redisConnection.GetDatabase();  
-    }  
+    private readonly IMemoryCache _cache;
+    private static readonly TimeSpan DefaultCacheDuration = TimeSpan.FromMinutes(10);
 
-    public async Task CacheUserAsync(UserRead user)
+    public CacheService(IMemoryCache memoryCache)
     {
-        var serializedUser = JsonConvert.SerializeObject(user);
-        await _cache.StringSetAsync(GetCacheKey(user.UserId), serializedUser);
+        _cache = memoryCache ?? throw new ArgumentNullException(nameof(memoryCache));
     }
-    
-    public async Task<UserRead> GetCachedUserAsync(int userId)  
-    {  
-        var cachedUser = await _cache.StringGetAsync(GetCacheKey(userId));  
-        return cachedUser.IsNullOrEmpty ? null : JsonConvert.DeserializeObject<UserRead>(cachedUser);  
-    }  
-    
-    public async Task InvalidateCachedUserAsync(int userId)  
-    {  
-        await _cache.KeyDeleteAsync(GetCacheKey(userId));  
-    }  
-    private string GetCacheKey(int userId)  
-    {  
-        return $"User:{userId}";  
-    }  
+
+    public Task CacheUserAsync(UserRead user)
+    {
+        if (user == null) throw new ArgumentNullException(nameof(user));
+
+        var key = GetCacheKey(user.UserId);
+        _cache.Set(key, user, DefaultCacheDuration);
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// Retrieves a cached UserRead by ID, or null if not present.
+    /// </summary>
+    public Task<UserRead> GetCachedUserAsync(int userId)
+    {
+        var key = GetCacheKey(userId);
+        _cache.TryGetValue(key, out UserRead user);
+        return Task.FromResult(user);
+    }
+
+    /// <summary>
+    /// Removes a UserRead from the cache.
+    /// </summary>
+    public Task InvalidateCachedUserAsync(int userId)
+    {
+        _cache.Remove(GetCacheKey(userId));
+        return Task.CompletedTask;
+    }
+
+    private string GetCacheKey(int userId) => $"User:{userId}";
 }
