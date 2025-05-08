@@ -1,4 +1,5 @@
 using Azure.Storage.Blobs;
+using DatabasesComplusory.Application.Commands.ListingCommands;
 using DatabasesComplusory.Application.Commands.UserCommandHandlers;
 using DatabasesComplusory.Application.Events;
 using DatabasesComplusory.Application.Events.UserEventHandlers;
@@ -37,10 +38,6 @@ builder.Services.AddSingleton<MongoDbContext>(sp =>
     return new MongoDbContext(connStr, databaseName);
 });
 
-builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
-    ConnectionMultiplexer.Connect(
-        builder.Configuration.GetConnectionString("Redis")!));
-
 builder.Services.AddSingleton(sp =>
 {
     var conn = builder.Configuration.GetConnectionString("BlobStorage");
@@ -57,6 +54,7 @@ builder.Services.AddScoped<CacheService>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IMediaRepository, MediaRepository>();
 builder.Services.AddScoped<IUserReadRepository, UserReadRepository>();
 builder.Services.AddScoped<IListingRepository, ListingRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
@@ -67,8 +65,10 @@ builder.Services.AddSingleton<IEventBus, InMemoryEventBus>();
 
 builder.Services.AddScoped<CreateUserCommandHandler>();
 builder.Services.AddScoped<GetUserCommandHandler>();
+builder.Services.AddScoped<CreateListingCommandHandler>();
 
 builder.Services.AddScoped<UserCreatedEventHandler>();
+builder.Services.AddScoped<ListingCreatedEventHandler>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
