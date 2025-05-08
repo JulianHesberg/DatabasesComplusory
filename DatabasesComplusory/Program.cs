@@ -1,3 +1,4 @@
+using Azure.Storage.Blobs;
 using DatabasesComplusory.Application.Commands.UserCommandHandlers;
 using DatabasesComplusory.Application.Events;
 using DatabasesComplusory.Application.Events.UserEventHandlers;
@@ -40,8 +41,20 @@ builder.Services.AddSingleton<IConnectionMultiplexer>(sp =>
     ConnectionMultiplexer.Connect(
         builder.Configuration.GetConnectionString("Redis")!));
 
+builder.Services.AddSingleton(sp =>
+{
+    var conn = builder.Configuration.GetConnectionString("BlobStorage");
+    if (string.IsNullOrWhiteSpace(conn))
+        throw new InvalidOperationException("Configure ConnectionStrings:BlobStorage in appsettings.json");
+    return new BlobServiceClient(conn);
+});
+
+
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
+
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<CacheService>();
+builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserReadRepository, UserReadRepository>();

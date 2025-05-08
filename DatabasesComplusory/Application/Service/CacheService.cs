@@ -22,9 +22,6 @@ public class CacheService
         return Task.CompletedTask;
     }
 
-    /// <summary>
-    /// Retrieves a cached UserRead by ID, or null if not present.
-    /// </summary>
     public Task<UserRead> GetCachedUserAsync(int userId)
     {
         var key = GetCacheKey(userId);
@@ -32,9 +29,6 @@ public class CacheService
         return Task.FromResult(user);
     }
 
-    /// <summary>
-    /// Removes a UserRead from the cache.
-    /// </summary>
     public Task InvalidateCachedUserAsync(int userId)
     {
         _cache.Remove(GetCacheKey(userId));
