@@ -39,6 +39,7 @@ public class CreateListingCommandHandler
             };
 
             var created = await _listingRepository.AddAsync(listing);
+            await _unitOfWork.SaveChangesAsync();
             var allMedias = new List<Media>();
             foreach (var file in command.Media)
             {

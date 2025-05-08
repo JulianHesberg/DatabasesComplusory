@@ -16,7 +16,7 @@ public class BlobStorageService : IBlobStorageService
     public async Task<string> UploadFileAsync(string containerName, Stream fileStream, string fileName, string contentType)
     {
         var container = _blobStorageClient.GetBlobContainerClient(containerName);
-        await container.CreateIfNotExistsAsync(PublicAccessType.Blob);
+        await container.CreateIfNotExistsAsync();
 
         var blob = container.GetBlobClient(fileName);
         await blob.UploadAsync(fileStream, new BlobHttpHeaders { ContentType = contentType });
