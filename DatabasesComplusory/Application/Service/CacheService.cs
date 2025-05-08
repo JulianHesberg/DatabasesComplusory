@@ -34,6 +34,22 @@ public class CacheService
         _cache.Remove(GetCacheKey(userId));
         return Task.CompletedTask;
     }
+    
+    public Task CacheListingAsync(ListingRead listing)
+    {
+        if (listing == null) throw new ArgumentNullException(nameof(listing));
+
+        var key = GetCacheKey(listing.ListingId);
+        _cache.Set(key, listing, DefaultCacheDuration);
+        return Task.CompletedTask;
+    }
+    
+    public Task<ListingRead> GetCachedLystingAsync(int listingId)
+    {
+        var key = GetCacheKey(listingId);
+        _cache.TryGetValue(key, out ListingRead listing);
+        return Task.FromResult(listing);
+    }
 
     private string GetCacheKey(int userId) => $"User:{userId}";
 }

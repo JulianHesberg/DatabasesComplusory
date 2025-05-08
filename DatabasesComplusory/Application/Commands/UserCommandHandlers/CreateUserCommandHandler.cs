@@ -39,12 +39,12 @@ public class CreateUserCommandHandler
                 Email = created.Email
             };
             await _eventBus.Publish(userCreatedEvent);
-            await transaction.CommitAsync();
+            await _unitOfWork.CommitAsync();
             return created;
         }
         catch
         {
-            await transaction.RollbackAsync();
+            await _unitOfWork.RollbackAsync();
             throw;
         }
     }
