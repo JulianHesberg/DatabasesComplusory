@@ -42,8 +42,8 @@ public class CreateListingCommandHandler
             var allMedias = new List<Media>();
             foreach (var file in command.Media)
             {
-                var uri = await _blobStorageService.UploadFileAsync("media", file.FileStream, file.FileName,
-                    file.FileType);
+                var uri = await _blobStorageService.UploadFileAsync("media", file.OpenReadStream(), file.FileName,
+                    file.ContentType);
                 var media = new Media
                 {
                     ListingId = created.ListingId,
@@ -66,13 +66,13 @@ public class CreateListingCommandHandler
             };
 
             await _eventBus.Publish(listingCreatedEvent);
-            await transaction.CommitAsync();
+            await _unitOfWork.CommitAsync();
             return created;
 
         }
         catch
         {
-            await transaction.RollbackAsync();
+            await _unitOfWork.RollbackAsync();
             throw;
         }
         

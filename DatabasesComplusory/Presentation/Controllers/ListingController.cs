@@ -18,7 +18,7 @@ public class ListingController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateListingCommand command)
+    public async Task<IActionResult> Create([FromForm] CreateListingCommand command)
     {
         try
         {

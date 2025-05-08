@@ -47,8 +47,6 @@ builder.Services.AddSingleton(sp =>
 });
 
 
-builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
-
 builder.Services.AddMemoryCache();
 builder.Services.AddScoped<CacheService>();
 builder.Services.AddScoped<IBlobStorageService, BlobStorageService>();
@@ -86,6 +84,13 @@ bus.Subscribe<UserCreatedEvent>(evt =>
 })
 .GetAwaiter()
 .GetResult();
+
+bus.Subscribe<ListingCreatedEvent>(evt =>
+{
+    using var scope = app.Services.CreateScope();
+    var handler = scope.ServiceProvider.GetRequiredService<ListingCreatedEventHandler>();
+    handler.Handle(evt);
+}).GetAwaiter().GetResult();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
