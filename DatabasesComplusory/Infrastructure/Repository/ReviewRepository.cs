@@ -1,13 +1,23 @@
 using DatabasesComplusory.Domain.Entities.Write;
 using DatabasesComplusory.Domain.Interfaces;
+using DatabasesComplusory.Infrastructure.Context;
 
 namespace DatabasesComplusory.Infrastructure.Repository;
 
 public class ReviewRepository : IReviewRepository
 {
-    public Task<Review> AddAsync(Review review)
+
+    private readonly EfCoreContext _db;
+
+    public ReviewRepository(EfCoreContext db)
     {
-        throw new NotImplementedException();
+        _db = db;
+    }
+    
+    public async Task<Review> AddAsync(Review review)
+    {
+        var entry = await _db.Reviews.AddAsync(review);
+        return entry.Entity;
     }
 
     public Task DeleteAsync(int id)

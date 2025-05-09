@@ -1,4 +1,6 @@
+using DatabasesComplusory.Application.Domain.Entities.Read;
 using DatabasesComplusory.Domain.Entities.Read;
+using DatabasesComplusory.Domain.Entities.Write;
 using MongoDB.Driver;
 
 namespace DatabasesComplusory.Infrastructure.Context;
@@ -14,6 +16,6 @@ public class MongoDbContext
     }
     
     public IMongoCollection<UserRead> Users => _database.GetCollection<UserRead>("Users");  
-      
-    public IMongoCollection<ListingRead> Listings => _database.GetCollection<ListingRead>("Listings");   
+    public IMongoCollection<ListingRead> Listings => _database.GetCollection<ListingRead>("Listings");
+    public IMongoCollection<ReviewRead> Reviews => _database.GetCollection<ReviewRead>("Reviews");
 }
