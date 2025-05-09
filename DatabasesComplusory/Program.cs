@@ -1,10 +1,14 @@
 using Azure.Storage.Blobs;
 using DatabasesComplusory.Application.Commands.ListingCommands;
+using DatabasesComplusory.Application.Commands.ReviewCommandHandlers;
+using DatabasesComplusory.Application.Commands.ReviewCommands;
 using DatabasesComplusory.Application.Commands.UserCommandHandlers;
 using DatabasesComplusory.Application.Events;
 using DatabasesComplusory.Application.Events.UserEventHandlers;
+using DatabasesComplusory.Application.Events.UserEvents;
 using DatabasesComplusory.Application.Handlers.UserHandlers;
 using DatabasesComplusory.Application.Interfaces;
+using DatabasesComplusory.Application.ReviewCommandHandlers;
 using DatabasesComplusory.Application.Service;
 using DatabasesComplusory.Domain.Interfaces;
 using DatabasesComplusory.Infrastructure.Context;
@@ -12,7 +16,6 @@ using DatabasesComplusory.Infrastructure.EventBus;
 using DatabasesComplusory.Infrastructure.Repository;
 using DatabasesComplusory.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
-using StackExchange.Redis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,8 +58,10 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IMediaRepository, MediaRepository>();
 builder.Services.AddScoped<IUserReadRepository, UserReadRepository>();
 builder.Services.AddScoped<IListingRepository, ListingRepository>();
+builder.Services.AddScoped<IListingReadRepository, ListingReadRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+builder.Services.AddScoped<IReviewReadRepository, ReviewReadRepository>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<IEventBus, InMemoryEventBus>();
@@ -64,9 +69,14 @@ builder.Services.AddSingleton<IEventBus, InMemoryEventBus>();
 builder.Services.AddScoped<CreateUserCommandHandler>();
 builder.Services.AddScoped<GetUserCommandHandler>();
 builder.Services.AddScoped<CreateListingCommandHandler>();
+builder.Services.AddScoped<CreateReviewCommandHandler>();
+builder.Services.AddScoped<GetReviewByIdCommandHandler>();
+builder.Services.AddScoped<GetReviewsBySellerCommandHandler>();
 
 builder.Services.AddScoped<UserCreatedEventHandler>();
 builder.Services.AddScoped<ListingCreatedEventHandler>();
+builder.Services.AddScoped<ReviewCreatedEventHandler>();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddControllers();
@@ -89,6 +99,13 @@ bus.Subscribe<ListingCreatedEvent>(evt =>
 {
     using var scope = app.Services.CreateScope();
     var handler = scope.ServiceProvider.GetRequiredService<ListingCreatedEventHandler>();
+    handler.Handle(evt);
+}).GetAwaiter().GetResult();
+
+bus.Subscribe<ReviewCreatedEvent>(evt =>
+{
+    using var scope = app.Services.CreateScope();
+    var handler = scope.ServiceProvider.GetRequiredService<ReviewCreatedEventHandler>();
     handler.Handle(evt);
 }).GetAwaiter().GetResult();
 
